@@ -18,80 +18,95 @@ auto Board::isFull() const -> bool {
     return predicate(board_);
 }
 
-auto Board::isGameOver() const -> bool {
-    auto predicate = [](const auto &board) -> bool {
-        assert(std::size(board) > 0 && std::size(board[0]) > 0);
-        const auto rows = std::size(board), columns = std::size(board[0]);
-        // rows
-        for (std::size_t i = 0; i < rows; ++i) {
-            auto mark = board[i][0];
-            if (mark == Figures::Empty) {
-                continue;
-            }
-
-            auto counter = 0;
-            for (std::size_t j = 1; j < columns; ++j) {
-                if (board[i][j] == mark) {
-                    ++counter;
-                }
-            }
-
-            if (counter == 2) {
-                return true;
-            }
+auto Board::threeInARow() const -> bool {
+    const auto rows = std::size(board_), columns = std::size(board_[0]);
+    for (std::size_t i = 0; i < rows; ++i) {
+        auto mark = board_[i][0];
+        if (mark == Figures::Empty) {
+            continue;
         }
 
-        // cols
-        for (std::size_t i = 0; i < rows; ++i) {
-            auto mark = board[0][i];
-            if (mark == Figures::Empty) {
-                continue;
-            }
-
-            auto counter = 0;
-            for (std::size_t j = 1; j < columns; ++j) {
-                if (board[j][i] == mark) {
-                    ++counter;
-                }
-            }
-
-            if (counter == 2) {
-                return true;
-            }
-        }
-
-        // diagonals
         auto counter = 0;
-        if (auto mark = board[0][0]; mark != Figures::Empty) {
-            for (std::size_t i = 0, j = 0; i < rows; ++i, j = i) {
-                if (board[i][j] == mark) {
-                    ++counter;
-                }
+        for (std::size_t j = 1; j < columns; ++j) {
+            if (board_[i][j] == mark) {
+            ++counter;
             }
         }
 
-        if (counter == 3) {
+        if (counter == 2) {
             return true;
         }
+    }
 
-        counter = 0;
+    return false;
+}
 
-        if (auto mark = board[0][columns - 1]; mark != Figures::Empty) {
-            for (std::size_t i = 0, j = columns - 1; i < rows; ++i, --j) {
-                if (board[i][j] == mark) {
-                    ++counter;
-                }
+auto Board::threeInAColumn() const -> bool {
+    const auto rows = std::size(board_), columns = std::size(board_[0]);
+    for (std::size_t i = 0; i < rows; ++i) {
+        auto mark = board_[0][i];
+        if (mark == Figures::Empty) {
+            continue;
+        }
+
+        auto counter = 0;
+        for (std::size_t j = 1; j < columns; ++j) {
+            if (board_[j][i] == mark) {
+                ++counter;
             }
         }
 
-        if (counter == 3) {
+        if (counter == 2) {
             return true;
         }
+    }
 
-        return false;
-    };
+    return false;
+}
 
-    return predicate(board_);
+auto Board::threeInAFirstDiagonal() const -> bool {
+    const auto rows = std::size(board_);
+    auto counter = 0;
+
+    if (auto mark = board_[0][0]; mark != Figures::Empty) {
+        for (std::size_t i = 0, j = 0; i < rows; ++i, j = i) {
+            if (board_[i][j] == mark) {
+                ++counter;
+            }
+        }
+    }
+
+    if (counter == 3) {
+        return true;
+    }
+
+    return false;
+}
+
+auto Board::threeInASecondDiagona() const -> bool {
+    const auto rows = std::size(board_), columns = std::size(board_[0]);
+    auto counter = 0;
+
+    if (auto mark = board_[0][columns - 1]; mark != Figures::Empty) {
+        for (std::size_t i = 0, j = columns - 1; i < rows; ++i, --j) {
+            if (board_[i][j] == mark) {
+                ++counter;
+            }
+        }
+    }
+
+    if (counter == 3) {
+        return true;
+    }
+
+
+    return false;
+}
+
+auto Board::isGameOver() const -> bool {
+    assert(std::size(board_) > 0 && std::size(board_[0]) > 0);
+
+    return threeInARow() || threeInAColumn() || threeInAFirstDiagonal() || threeInASecondDiagona();
 }
 
 auto Board::emptyFields() -> std::vector<Spot> {

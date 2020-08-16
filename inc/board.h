@@ -19,6 +19,10 @@ public:
     }
 
     auto isFull() const -> bool;
+    auto threeInARow() const -> bool;
+    auto threeInAColumn() const -> bool;
+    auto threeInAFirstDiagonal() const -> bool;
+    auto threeInASecondDiagona() const -> bool;
     auto isGameOver() const -> bool;
     auto emptyFields() -> std::vector<Spot>;
     auto isSpotEmpty(Spot spot) -> bool;
