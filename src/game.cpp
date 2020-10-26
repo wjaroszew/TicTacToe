@@ -2,15 +2,23 @@
 
 #include "computerenemy.h"
 #include "humanplayer.h"
+#include "qtbridge.h"
 
 #include <QWidget>
 #include <ctime>
 #include <string>
 
+
+struct Game::impl {
+    using Callback = std::function<void(void)>;
+    const QtBridge qtbridge_;
+    impl(Callback callback): qtbridge_(callback) {}
+    ~impl() = default;
+};
+
 Game::Game()
-    : board_(new Board())
-    , qtbridge_([this] { nextPlayer(); }) {
-}
+    : pImpl_(std::make_unique<impl>([this] { nextPlayer(); }))
+    , board_(new Board()) {}
 
 auto Game::launch() -> void {
     auto self = weak_from_this();
@@ -56,9 +64,9 @@ auto Game::nextPlayer() -> void {
     players_[active_player_index_]->wakeUp();
 }
 
-auto Game::aiFinishedTurn(Board::Spot spot) -> void {
+auto Game::aiFinishedTurn(Board::Spot spot) const -> void {
     auto [x, y] = spot;
-    qtbridge_.endTurn(x * 10 + y);
+    pImpl_->qtbridge_.endTurn(x * 10 + y);
 }
 
 auto Game::isGameOver() const -> bool {
@@ -74,7 +82,7 @@ auto Game::boardDimension() const -> Board::Spot {
 }
 
 auto Game::qtBridge() const -> const QtBridge & {
-    return qtbridge_;
+    return pImpl_->qtbridge_;
 }
 
 auto Game::activePlayerName() const -> std::string {
@@ -94,3 +102,5 @@ auto Game::isAiPlayerTurn() const -> bool {
     return players_[active_player_index_]->playerType() ==
            IPlayer::PlayerType::AI;
 }
+
+Game::~Game(){}

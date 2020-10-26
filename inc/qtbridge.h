@@ -17,14 +17,14 @@ public:
         , callback_(callback) {
     }
 
-    auto endTurn(int index) -> void;
+    auto endTurn(int index) const -> void;
     virtual ~QtBridge() = default;
 
 public slots:
     void activateNextPlayer();
 
 signals:
-    void playerFinishedTurn(int index);
+    void playerFinishedTurn(int index) const;
 };
 
 #endif // QTBRIDGE_H
