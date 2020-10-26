@@ -20,7 +20,7 @@ private:
     std::uint16_t number_of_players_{0};
 
 public:
-    explicit Game();
+    Game();
     auto launch() -> void;
     auto markSpot(int index) -> bool;
     auto markSpot(Board::Spot spot) -> bool;
