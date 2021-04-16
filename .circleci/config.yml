@@ -14,9 +14,7 @@ jobs:
             cd qt5
             sudo apt-get update -y; true
             sudo apt-get install apt -y
-            git clone --recurse-submodules git://code.qt.io/qt/qt5.git
-            git checkout 5.15 
-            git submodules update --recursive
+            git clone --branch=5.15 --recurse-submodules git://code.qt.io/qt/qt5.git
       # - run:
       #     name: Check for changes when running generator
       #     command: go generate && git status | grep modified && sh -c "exit 1" || echo "Success. No changes were found"
