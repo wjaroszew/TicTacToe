@@ -2,14 +2,16 @@
 version: 2.1
 
 jobs:
-  build_app:
+  build_sdk:
     docker:
       - image: cimg/base:2020.01
-    working_directory: /opt/qt5/
     steps:
+      - checkout
       - run:
           name: Prepare qt env
           command: | 
+            mkdir -p /opt/qt5/
+            cd /opt/qt5/
             sudo apt-get update -y; true
             sudo apt-get install apt -y
             git clone --recurse-submodules git://code.qt.io/qt/qt5.git
@@ -34,4 +36,4 @@ workflows:
     # Run the welcome/run job in its own container
     jobs:
       - welcome/run
-      - build_app
+      - build_sdk
