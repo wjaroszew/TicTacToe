@@ -8,7 +8,7 @@ jobs:
     working_directory: /opt/qt5/
     steps:
       - run:
-          name: Prepare env
+          name: Prepare qt env
           command: | 
             sudo apt-get update -y; true
             sudo apt-get install apt -y
@@ -34,3 +34,4 @@ workflows:
     # Run the welcome/run job in its own container
     jobs:
       - welcome/run
+      - build_app
